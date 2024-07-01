@@ -39,7 +39,8 @@ const updateTaskById = async (req, res) => {
 
 const DeleteTaskById = async (req, res) => {
   try {
-    const data = await TaskModel.find({});
+    const id = req.params.id;
+    await TaskModel.findByIdAndDelete(id);
     res
       .status(200)
       .json({ message: "Task Deleted SuccessFully", success: true });
