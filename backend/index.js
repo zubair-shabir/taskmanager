@@ -5,6 +5,7 @@ require("./Models/db");
 const TaskRouter = require("./Routes/TaskRouter");
 
 const bodyParser = require("body-parser");
+const cors = require("cors");
 
 const PORT = process.env.PORT || 8080;
 
@@ -13,6 +14,7 @@ app.get("/", (req, res) => {
 });
 
 app.use(bodyParser.json());
+app.use(cors());
 
 app.use("/tasks", TaskRouter);
 
