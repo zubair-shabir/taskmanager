@@ -8,13 +8,32 @@ import {
 } from "react-icons/fa";
 
 import { ToastContainer } from "react-toastify";
-import { createTask, GetAllTasks } from "./api";
+import { createTask, GetAllTasks, DeleteTaksById, UpdateTaskById } from "./api";
 import { notify } from "./utils";
 
 const TaskManager = () => {
   const [input, setInput] = useState("");
   const [tasks, setTasks] = useState([]);
   const [copyTasks, setCopyTasks] = useState([]);
+  const [updateTask, setUpdateTask] = useState(null);
+
+  const handleTask = () => {
+    if (updateTask && input) {
+      const obj = {
+        taskName: input,
+        isDone: updateTask.isDone,
+        _id: updateTask._id,
+      };
+      handleUpdateItem(obj);
+    } else if (updateTask === null && input) {
+      handleAddTask();
+    }
+  };
+
+  useEffect(() => {
+    if (updateTask) [setInput(updateTask.taskName)];
+  }, [updateTask]);
+
   const handleAddTask = async () => {
     const obj = {
       taskName: input,
@@ -28,6 +47,7 @@ const TaskManager = () => {
         notify(message, "error");
       }
       setInput("");
+      FetchAllTasks();
     } catch (error) {
       notify("failed To create task", "error");
     }
@@ -48,9 +68,64 @@ const TaskManager = () => {
       notify("failed To create task", "error");
     }
   };
+  const onDeleteTask = async (id) => {
+    try {
+      const { success, message } = await DeleteTaksById(id);
+      if (success) {
+        notify(message, "success");
+      } else {
+        notify(message, "error");
+      }
+      FetchAllTasks();
+    } catch (error) {
+      notify("failed To create task", "error");
+    }
+  };
+  const handleCheckAndUncheck = async (item) => {
+    const { _id, isDone, taskName } = item;
+    const obj = {
+      taskName,
+      isDone: !isDone,
+    };
+    try {
+      const { success, message } = await UpdateTaskById(_id, obj);
+      if (success) {
+        notify(message, "success");
+      } else {
+        notify(message, "error");
+      }
+      FetchAllTasks();
+    } catch (error) {
+      notify("failed To create task", "error");
+    }
+  };
   useEffect(() => {
     FetchAllTasks();
   }, []);
+
+  const handleUpdateItem = async (item) => {
+    const { _id, isDone, taskName } = item;
+    const obj = {
+      taskName,
+      isDone: isDone,
+    };
+    try {
+      const { success, message } = await UpdateTaskById(_id, obj);
+      if (success) {
+        notify(message, "success");
+        setInput("");
+      } else {
+        notify(message, "error");
+      }
+      FetchAllTasks();
+    } catch (error) {
+      notify("failed To create task", "error");
+    }
+  };
+
+  const handleSearch = (e) => {
+    const term = e.target.value;
+  };
 
   return (
     <div className="d-flex flex-column align-items-center w-50  m-auto mt-5">
@@ -66,10 +141,7 @@ const TaskManager = () => {
             placeholder="Add an new task"
             onChange={(e) => setInput(e.target.value)}
           />
-          <button
-            className="btn btn-success btn-sm me-2"
-            onClick={handleAddTask}
-          >
+          <button className="btn btn-success btn-sm me-2" onClick={handleTask}>
             <FaPlus className="m-2" />
           </button>
         </div>
@@ -81,6 +153,7 @@ const TaskManager = () => {
             type="text"
             className="form-control"
             placeholder="Search Tasks"
+            onChange={handleSearch}
           />
         </div>
       </div>
@@ -96,13 +169,27 @@ const TaskManager = () => {
             </span>
 
             <div className="">
-              <button type="button" className="btn btn-success btn-sm me-2" onClick={}>
+              <button
+                type="button"
+                className="btn btn-success btn-sm me-2"
+                onClick={() => handleCheckAndUncheck(item)}
+              >
                 <FaCheck />
               </button>
-              <button type="button" className="btn btn-primary btn-sm me-2">
+              <button
+                type="button"
+                className="btn btn-primary btn-sm me-2"
+                onClick={() => {
+                  setUpdateTask(item);
+                }}
+              >
                 <FaPencilAlt />
               </button>
-              <button type="button" className="btn btn-danger btn-sm me-2">
+              <button
+                type="button"
+                className="btn btn-danger btn-sm me-2"
+                onClick={() => onDeleteTask(item._id)}
+              >
                 <FaTrash />
               </button>
             </div>
