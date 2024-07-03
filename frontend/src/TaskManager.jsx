@@ -56,7 +56,6 @@ const TaskManager = () => {
     try {
       const { success, message, data } = await GetAllTasks();
       if (success) {
-        console.log(data);
         setTasks(data);
         setCopyTasks(data);
         // notify(message, "success");
@@ -124,7 +123,12 @@ const TaskManager = () => {
   };
 
   const handleSearch = (e) => {
-    const term = e.target.value;
+    const term = e.target.value?.toLowerCase();
+    const oldTasks = [...copyTasks];
+    const results = oldTasks.filter((item) =>
+      item.taskName?.toLowerCase().includes(term)
+    );
+    setTasks(results);
   };
 
   return (
