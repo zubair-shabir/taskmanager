@@ -4,4 +4,4 @@ export const notify = (message, type) => {
   console.log("toast");
   toast[type](message);
 };
-export const API_URL = "http://localhost:8080";
+export const API_URL = "https://taskmanager-api-ten.vercel.app";
