@@ -136,8 +136,8 @@ const TaskManager = () => {
       <h1 className="mb-4">Task Manager App</h1>
       {/** Input and Search Fields */}
 
-      <div className="d-flex justify-content-between align-items-center mb-4 w-100">
-        <div className="input-group flex-grow-1 me-2">
+      <div className="d-flex justify-content-between align-items-center mb-4 column-gap-3 w-100 flex-column-reverse flex-md-row ">
+        <div className="input-group flex-grow-1 me-2 m-4">
           <input
             value={input}
             type="text"
@@ -165,7 +165,7 @@ const TaskManager = () => {
       <div className="d-flex flex-column w-100">
         {tasks.map((item) => (
           <div
-            className="m-2 p-2 border bg-light w-100 rounded-3 d-flex justify-content-between align-items-center"
+            className="m-2 p-2 border bg-light w-100 rounded-3 d-flex justify-content-between align-items-center flex-column gap-3 flex-sm-row"
             key={item._id}
           >
             <span className={item.isDone ? "text-decoration-line-through" : ""}>
