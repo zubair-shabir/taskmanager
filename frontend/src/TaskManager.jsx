@@ -18,6 +18,7 @@ const TaskManager = () => {
   const [updateTask, setUpdateTask] = useState(null);
 
   const handleTask = () => {
+    console.log(updateTask);
     if (updateTask && input) {
       const obj = {
         taskName: input,
@@ -113,6 +114,7 @@ const TaskManager = () => {
       if (success) {
         notify(message, "success");
         setInput("");
+        setUpdateTask(null);
       } else {
         notify(message, "error");
       }
@@ -144,6 +146,9 @@ const TaskManager = () => {
             className="form-control me-1"
             placeholder="Add an new task"
             onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleAddTask()}
+
+
           />
           <button className="btn btn-success btn-sm me-2" onClick={handleTask}>
             <FaPlus className="m-2" />
